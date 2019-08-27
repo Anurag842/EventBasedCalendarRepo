@@ -9,6 +9,14 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.print.min.css' rel='stylesheet'
+        media='print' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css" rel="stylesheet" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
  <%--the below two link is used to connect javasciprt and css file in the spring mvc flow and also above include taglib core--%>
@@ -194,6 +202,14 @@
 	</table>
 	
 	</div> 
+	
+	<div class="ui container">
+        <div class="ui grid">
+            <div class="ui sixteen column">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -224,7 +240,7 @@
 	                 clientList=clientList+"<td> "+ obj.stringdepart +"</td>";
 	                 clientList=clientList+"<td>"+ obj.agenda +"</td>";
 	                 clientList=clientList+"<td>"+ obj.account +"</td>";
-	                 clientList=clientList+"<td><a href='${pageContext.request.contextPath}/viewClientEvent/"+obj.clientId+"'>View Events</a></td>";
+	                 clientList=clientList+"<td><a  href='http://localhost:2521/EventBasedCalendar/viewClientEvent/"+obj.clientId+"'>View Events</a></td>";
 	                 clientList=clientList+"</tr>";
 	                sessionStorage.clear();
 	                
@@ -255,8 +271,14 @@
 		 console.log("Arrival compare "+valid1);
 		
 		 var DepartureDate=$('#enddate').val();
+		 console.log(DepartureDate);
+		
+		 console.log(DepartureDate);
 		 var eventEndDate=$('#endtime').val();
-		 var valid2=DepartureDate>=eventEndDate;
+		 var deptDate=new Date(DepartureDate);		
+		 var eventDate=new Date(eventEndDate);		
+		 		
+		 var valid2=deptDate>=eventDate;
 		 console.log("departute  compare "+valid2);
 		 
 		var flag1=eventStartDate<eventEndDate;

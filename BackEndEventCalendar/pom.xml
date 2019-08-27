@@ -76,6 +76,8 @@
     <artifactId>jstl</artifactId>
     <version>1.2</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+
 
   </dependencies>
 </project>

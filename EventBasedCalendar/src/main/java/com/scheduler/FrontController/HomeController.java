@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class HomeController {
 			else
 				eObj.setCli(cObj);
 				
-			eObj.setEventType(events2[0]);
+			eObj.setTitle(events2[0]);
 			
 			
 			//System.out.println("start Date and Time"+events2[1]);
@@ -107,10 +108,10 @@ public class HomeController {
 			Date startDateTime =sdf.parse(events2[1]);
 			Date endDateTime =sdf.parse(events2[2]);
 			
-			eObj.setStartTimeDate(startDateTime);
+			eObj.setStart(startDateTime);
 			
 			
-			eObj.setEndTimeDate(endDateTime);
+			eObj.setEnd(endDateTime);
 			
 			
 			
@@ -122,10 +123,10 @@ public class HomeController {
 		}
 		}catch(Exception e){
 			e.printStackTrace();
-//			mv=new ModelAndView("HomePage");
-//			clientDao.delClient(cObj.getClientId());
-//			mv.addObject("msg","There is some problem..Please fill the Event Details");
-		//	return mv;
+			mv=new ModelAndView("HomePage");
+			clientDao.delClient(cObj.getClientId());
+			mv.addObject("msg","There is some problem..Please fill the Event Details");
+			return mv;
 		}
 		mv=new ModelAndView("HomePage");
 		mv.addObject("msg","Client Itinerary Successfully");
@@ -153,26 +154,26 @@ public class HomeController {
 		
 	}
 	
-	@RequestMapping(value="/viewClientEvent/{clientId}" , method=RequestMethod.GET)
-	public ModelAndView viewClientEvent(@PathVariable int clientId,ModelMap map){
-			System.out.println(clientId);
-			
-			
-			Client c=clientDao.viewClient(clientId);
-			
-			
-			ModelAndView mv=new ModelAndView("EventView"); 
-			mv.addObject("clientName",c.getClientName());  
-			mv.addObject("clientId",c.getClientId()); 
-			List<Events> eventList=eventDao.viewAllEventsById(clientId);
-			for(Events event:eventList){
-			System.out.println("Event"+event);
-			}
-			mv.addObject("EventsList", eventList);
-			
-			return mv;
-		
-	}
+//	@RequestMapping(value="/viewClientEvent/{clientId}" , method=RequestMethod.GET)
+//	public ModelAndView viewClientEvent(@PathVariable int clientId,ModelMap map){
+//			System.out.println(clientId);
+//			
+//			
+//			Client c=clientDao.viewClient(clientId);
+//			
+//			
+//			ModelAndView mv=new ModelAndView("EventView"); 
+//			mv.addObject("clientName",c.getClientName());  
+//			mv.addObject("clientId",c.getClientId()); 
+//			List<Events> eventList=eventDao.viewAllEventsById(clientId);
+//			for(Events event:eventList){
+//			System.out.println("Event"+event);
+//			}
+//			mv.addObject("EventsList", eventList);
+//			
+//			return mv;
+//		
+//	}
 	@RequestMapping(value="/deleteEvent/{eventId}/{clientId}",method=RequestMethod.GET)
 	public ModelAndView deleteEvent(@PathVariable int eventId,ModelMap map,@PathVariable int clientId)
 	{
@@ -187,9 +188,23 @@ public class HomeController {
 		return mv;
 	}
 	
-//	@RequestMapping(value="/viewClientEvent/{clientId}" , method=RequestMethod.GET)
-//	public String viewClientEvent(@PathVariable int clientId,ModelMap map){
-//		return "cal";
-//	}
+	@Autowired
+	HttpSession session;
+
+	@RequestMapping(value="/viewClientEvent/{clientId}" , method=RequestMethod.GET)
+	public String viewClientEvent(@PathVariable int clientId){
+		System.out.println("Hello 1");
+		session.setAttribute("clientId",clientId);
+		
+		return "cal";
+	}
 	
+	@RequestMapping(value="/viewAllEvents" , method=RequestMethod.GET)
+	public @ResponseBody List<Events> viewAllEvents(){
+		
+		int clientId=(Integer)session.getAttribute("clientId");
+		List<Events> eventList=eventDao.viewAllEventsById(clientId);
+	
+		return eventList;
+	}
 }
